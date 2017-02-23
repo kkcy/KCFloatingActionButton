@@ -16,7 +16,7 @@ class KCFABWindow: UIWindow {
         super.init(frame: frame)
         
         self.backgroundColor = UIColor.clear
-        self.windowLevel = UIWindowLevelNormal
+        self.windowLevel = UIWindowLevelStatusBar
     }
 
     required init?(coder aDecoder: NSCoder) {

@@ -14,14 +14,18 @@ import UIKit
 open class KCFloatingActionButtonItem: UIView {
 
     // MARK: - Properties
-
+    
+    // New property for magicient
+    public var largeSize: Bool = false
+    public var smallSize: Bool = false
+    public var setLeftTop: Bool = false
+    
     /**
      This object's button size.
      */
     open var size: CGFloat = 42 {
         didSet {
-            self.frame = CGRect(x: 0, y: 0, width: size, height: size)
-            titleLabel.frame.origin.y = self.frame.height/2-titleLabel.frame.size.height/2
+            titleLabel.frame.origin.y = self.frame.height/2 - titleLabel.frame.size.height/2
             _iconImageView?.center = CGPoint(x: size/2, y: size/2) + imageOffset
             self.setNeedsDisplay()
         }
@@ -57,11 +61,6 @@ open class KCFloatingActionButtonItem: UIView {
     open var handler: ((KCFloatingActionButtonItem) -> Void)? = nil
 
     open var imageOffset: CGPoint = CGPoint.zero
-    open var imageSize: CGSize = CGSize(width: 25, height: 25) {
-        didSet {
-            _iconImageView?.frame = CGRect(x: 0, y: 0, width: imageSize.width, height: imageSize.height)
-        }
-    }
 
     /**
      Reference to parent
@@ -98,9 +97,31 @@ open class KCFloatingActionButtonItem: UIView {
      */
     open var title: String? = nil {
         didSet {
+            if smallSize {
+                titleLabel.font = titleLabel.font.withSize(15)
+            } else if largeSize {
+                titleLabel.font = titleLabel.font.withSize(18)
+            }
+            
             titleLabel.text = title
             titleLabel.sizeToFit()
-            titleLabel.frame.origin.x = -titleLabel.frame.size.width - 10
+            
+            if setLeftTop {
+                if largeSize {
+                    titleLabel.frame.origin.x = titleLabel.frame.size.width - 5
+                } else {
+//                    titleLabel.frame.origin.x = titleLabel.frame.size.width - 10
+                    titleLabel.frame.origin.x = titleLabel.frame.size.width - 25
+                }
+            } else {
+                if largeSize {
+                    titleLabel.frame.origin.x = -titleLabel.frame.size.width - 15
+                } else {
+//                    titleLabel.frame.origin.x = -titleLabel.frame.size.width - 10
+                    titleLabel.frame.origin.x = -titleLabel.frame.size.width - 5
+                }
+            }
+            
             titleLabel.frame.origin.y = self.size/2-titleLabel.frame.size.height/2
         }
     }
@@ -112,10 +133,22 @@ open class KCFloatingActionButtonItem: UIView {
     open var iconImageView: UIImageView {
         get {
             if _iconImageView == nil {
-                _iconImageView = UIImageView(frame: CGRect(x: 0, y: 0, width: imageSize.width, height: imageSize.height))
-                _iconImageView?.center = CGPoint(x: size/2, y: size/2) + imageOffset
-                _iconImageView?.contentMode = UIViewContentMode.scaleAspectFill
-                addSubview(_iconImageView!)
+                if smallSize {
+                    _iconImageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
+                    _iconImageView?.center = CGPoint(x: size/2, y: size/2) + imageOffset
+                    _iconImageView?.contentMode = UIViewContentMode.scaleAspectFill
+                    addSubview(_iconImageView!)
+                } else if largeSize {
+                    _iconImageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 45, height: 45))
+                    _iconImageView?.center = CGPoint(x: size/2, y: size/2) + imageOffset
+                    _iconImageView?.contentMode = UIViewContentMode.scaleAspectFill
+                    addSubview(_iconImageView!)
+                } else {
+                    _iconImageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
+                    _iconImageView?.center = CGPoint(x: size/2, y: size/2) + imageOffset
+                    _iconImageView?.contentMode = UIViewContentMode.scaleAspectFill
+                    addSubview(_iconImageView!)
+                }
             }
             return _iconImageView!
         }
@@ -144,6 +177,22 @@ open class KCFloatingActionButtonItem: UIView {
      */
     public init() {
         super.init(frame: CGRect(x: 0, y: 0, width: size, height: size))
+        backgroundColor = UIColor.clear
+    }
+    
+    public init(largeSize: Bool, setLeftTop: Bool) {
+        super.init(frame: CGRect(x: 0, y: 0, width: 45, height: 45))
+        self.largeSize = largeSize
+        self.size = 45
+        self.setLeftTop = setLeftTop
+        backgroundColor = UIColor.clear
+    }
+    
+    public init(smallSize: Bool, setLeftTop: Bool) {
+        super.init(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
+        self.smallSize = smallSize
+        self.size = 30
+        self.setLeftTop = setLeftTop
         backgroundColor = UIColor.clear
     }
 
